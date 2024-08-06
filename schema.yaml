@@ -1,0 +1,106 @@
+id: basic-schema
+name: BasicSchema
+description: A schema to validate a minimal JSON-LD structure with an IRI key.
+prefixes:
+  linkml: https://w3id.org/linkml/
+  schema: http://schema.org/
+  ex: http://example.org/
+
+default_prefix: ex
+default_range: string
+
+imports:
+  - linkml:types
+
+classes:
+  Root:
+    description: The root class containing the JSON-LD data.
+    tree_root: true
+    attributes:
+      graph:
+        alias: "at_graph"
+        description: The JSON-LD data
+        required: true
+        multivalued: true
+        range: Graph
+
+  Graph:
+    slots:
+      - metadata_file
+      - root_dataset
+
+  Entity:
+    description: A JSON-LD graph
+    abstract: true
+    attributes:
+      id:
+        alias: "at_id"
+        description: who cares
+        required: true
+        identifier: true
+        range: uri
+      type:
+        alias: "at_type"
+        description: The type of the entity.
+        required: true
+
+  MetadataFile:
+    is_a: Entity
+    description: A metadata file
+    attributes:
+      conforms_to:
+        description: The schema that the metadata file conforms to
+        required: true
+        range: string
+      about:
+        description: The entity that the metadata file is about
+        required: true
+        range: string
+
+  RootDataset:
+    is_a: Entity
+    description: The root dataset
+    attributes:
+      date_published:
+        description: The date the dataset was published.
+        required: true
+        range: string
+
+slots:
+  metadata_file:
+    description: A metadata file
+    required: true
+    range: MetadataFile
+
+  root_dataset:
+    description: The root dataset
+    required: true
+    range: RootDataset
+
+  # Entity:
+  #   description: A JSON-LD graph
+  #   abstract: true
+  #   attributes:
+  #     id:
+  #       alias: "at_id"
+  #       description: who cares
+  #       required: true
+  #       identifier: true
+  #       range: uri
+  #     type:
+  #       alias: "at_type"
+  #       description: The type of the entity.
+  #       required: true
+  #       #designates_type: true
+  #     # date_published:
+  #     #   alias: "http://schema.org/datePublished"
+  #     #   description: The date the dataset was published.
+  #     #   required: true
+
+
+
+
+
+
+
+
