@@ -5,7 +5,8 @@ import argparse
 import json
 import logging
 
-import absolutise 
+import absolutise
+import framing
 
 example_path = "/workspace/example.json"
 schema_path = "/workspace/schema.yaml"
@@ -33,34 +34,13 @@ def main(logger):
         crate = absolutise.absolutise(logger, crate_raw)
         
         # ----------------------------------------------------------------------
-        # Create a frame
-        logger.debug(f"Creating frame")
+        # Apply framing
         
         frame = {
             "@id": f"ro-crate-metadata.json",
         }
-        options = {
-            "base": crate['@context']['@base'],
-            "expandContext": crate['@context'],
-            "extractAllScripts": False,
-            "embed": "@never",
-            "explicit": False,
-            "omitDefault": False,
-            "processingMode": "json-ld-1.1",
-            "pruneBlankNodeIdentifiers": True,
-            "requireAll": False,
-        }
 
-        logger.debug(f"Frame: {json.dumps(frame, indent=2)}")
-        logger.debug(f"Options: {json.dumps(options, indent=2)}")
-        
-        # ---------------------------------------------------------------------
-        # Apply framing
-        logger.debug(f"Applying framing to {example_path}")
-        
-        framed = jsonld.frame(crate['@graph'], frame, options)
-
-        logger.info(f"Framed object: {json.dumps(framed, indent=2)}")
+        framed = framing.apply_frame(logger, crate, frame)
 
         # ---------------------------------------------------------------------
         # Validate the framed object
