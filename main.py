@@ -47,17 +47,13 @@ def main(logger):
         logger.debug(f"Creating frame")
         
         frame = {
-            "@context": {
-                "@vocab": "https://w3id.org/ro/crate/1.1/context",
-            },
             "@id": f"ro-crate-metadata.json",
-            "@embed": "@always"
         }
         options = {
             "base": base,
             "expandContext": crate['@context'],
             "extractAllScripts": False,
-            "embed": "@always",
+            "embed": "@never",
             "explicit": False,
             "omitDefault": False,
             "processingMode": "json-ld-1.1",
