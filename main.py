@@ -1,10 +1,11 @@
 from pyld import jsonld
 from linkml.validator import validate
 
+import argparse
 import json
 import logging
 
-import argparse
+import absolutise 
 
 example_path = "/workspace/example.json"
 schema_path = "/workspace/schema.yaml"
@@ -28,19 +29,8 @@ def main(logger):
 
         # ---------------------------------------------------------------------
         # Add a @base to the context
-        logger.debug(f"Adding @base to context")
-        
-        uuid = "uuid-goes-here"
-        base = f"arcp://uuid,{uuid}"            
 
-        crate = {}
-        crate['@context'] = {
-            "@vocab": "https://w3id.org/ro/crate/1.1/context/",
-            "@base": base
-        }
-        crate['@graph'] = crate_raw['@graph']
-
-        logger.debug(f"Crate object after adding @base: {json.dumps(crate, indent=2)}")
+        crate = absolutise.absolutise(logger, crate_raw)
         
         # ----------------------------------------------------------------------
         # Create a frame
@@ -50,7 +40,7 @@ def main(logger):
             "@id": f"ro-crate-metadata.json",
         }
         options = {
-            "base": base,
+            "base": crate['@context']['@base'],
             "expandContext": crate['@context'],
             "extractAllScripts": False,
             "embed": "@never",
@@ -94,12 +84,16 @@ def main(logger):
 
 if __name__ == "__main__":
 
+    # ---------------------------------------------------------------------
     # Parse command line agruments
+    
     arg_parser = argparse.ArgumentParser(description="RO-Crate Framing Example")
     arg_parser.add_argument("--log", help="Set logging level", default="INFO")
     args = arg_parser.parse_args()
 
+    # ---------------------------------------------------------------------
     # Set logging level
+    
     logging.basicConfig(level=args.log)
     logger = logging.getLogger(__name__)
     
