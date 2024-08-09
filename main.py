@@ -49,9 +49,8 @@ def main(logger):
         frame = {
             "@context": {
                 "@vocab": "https://w3id.org/ro/crate/1.1/context",
-                "@base": base
             },
-            "@id": f"{base}/ro-crate-metadata.json",
+            "@id": f"ro-crate-metadata.json",
             "@embed": "@always"
         }
         options = {
