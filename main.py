@@ -33,12 +33,14 @@ def main(logger):
         uuid = "uuid-goes-here"
         base = f"arcp://uuid,{uuid}"            
 
-        crate_raw['@context'] = {
+        crate = {}
+        crate['@context'] = {
             "@vocab": "https://w3id.org/ro/crate/1.1/context",
             "@base": base
         }
+        crate['@graph'] = crate_raw['@graph']
 
-        logger.debug(f"Raw object after adding @base: {json.dumps(crate_raw, indent=2)}")
+        logger.debug(f"Crate object after adding @base: {json.dumps(crate, indent=2)}")
         
         # ----------------------------------------------------------------------
         # Create a frame
@@ -54,7 +56,7 @@ def main(logger):
         }
         options = {
             "base": base,
-            "expandContext": crate_raw['@context'],
+            "expandContext": crate['@context'],
             "extractAllScripts": False,
             "embed": "@always",
             "explicit": False,
@@ -71,7 +73,7 @@ def main(logger):
         # Apply framing
         logger.debug(f"Applying framing to {example_path}")
         
-        framed = jsonld.frame(crate_raw['@graph'], frame, options)
+        framed = jsonld.frame(crate['@graph'], frame, options)
 
         logger.info(f"Framed object: {json.dumps(framed, indent=2)}")
 
