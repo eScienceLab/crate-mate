@@ -31,10 +31,8 @@ def main(logger):
         logger.debug(f"Adding @base to context")
         
         uuid = "uuid-goes-here"
-        base = f"arcp://uuid,{uuid}/"            
+        base = f"arcp://uuid,{uuid}"            
 
-        print(crate_raw)
-        print(crate_raw['@context'])
         crate_raw['@context'] = {
             "@vocab": "https://w3id.org/ro/crate/1.1/context",
             "@base": base
@@ -54,7 +52,17 @@ def main(logger):
             "@id": f"{base}/ro-crate-metadata.json",
             "@embed": "@always"
         }
-        options = {}
+        options = {
+            "base": base,
+            "expandContext": crate_raw['@context'],
+            "extractAllScripts": False,
+            "embed": "@always",
+            "explicit": False,
+            "omitDefault": False,
+            "processingMode": "json-ld-1.1",
+            "pruneBlankNodeIdentifiers": True,
+            "requireAll": False,
+        }
 
         logger.debug(f"Frame: {json.dumps(frame, indent=2)}")
         logger.debug(f"Options: {json.dumps(options, indent=2)}")
