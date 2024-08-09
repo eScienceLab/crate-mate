@@ -13,7 +13,7 @@ schema_path = "/workspace/schema.yaml"
 
 def main(logger):
     # Load crate jsonld into json object
-    with open(example_path, "r") as example_file, open(schema_path, "r") as schema_file:
+    with open(example_path, "r") as example_file:
 
         # ---------------------------------------------------------------------
         # Load json object from file
