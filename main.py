@@ -35,7 +35,7 @@ def main(logger):
 
         crate = {}
         crate['@context'] = {
-            "@vocab": "https://w3id.org/ro/crate/1.1/context",
+            "@vocab": "https://w3id.org/ro/crate/1.1/context/",
             "@base": base
         }
         crate['@graph'] = crate_raw['@graph']
