@@ -84,6 +84,7 @@ if __name__ == "__main__":
     
     logging.basicConfig(level=args.log)
     logger = logging.getLogger(__name__)
+    logger.setLevel(args.log)
     
     main(logger)
  
