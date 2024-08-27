@@ -23,7 +23,7 @@ def main(logger):
             crate_raw = json.load(example_file)
             logger.debug(f"Loaded example file: {example_path}")
         except Exception as e:
-            print(f"Error: {e}")
+            logger.error(f"Error: {e}")
             return
 
         logger.debug(f"Raw object: {json.dumps(crate_raw, indent=2)}")
