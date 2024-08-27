@@ -5,8 +5,8 @@ import argparse
 import json
 import logging
 
-import absolutise
-import framing
+from src import absolutise
+from src import framing
 
 example_path = "/workspace/example.json"
 schema_path = "/workspace/schema.yaml"
@@ -45,7 +45,6 @@ def main(logger):
         # ---------------------------------------------------------------------
         # Validate the framed object
         logger.debug(f"Validating the framed object")
-        
         try:
             target_class = "ROCrateMetadata"
             report = lmval.validate(instance=framed,
@@ -65,6 +64,7 @@ def main(logger):
 
         try:
             assert report.results == []
+            logger.info(f"Validation passed")
         except AssertionError as e:
             for result in report.results:
                 logger.error(f"{result.message}")
