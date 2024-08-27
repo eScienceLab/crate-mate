@@ -1,5 +1,5 @@
 from pyld import jsonld
-from linkml.validator import validate
+import linkml.validator as lmval
 
 import argparse
 import json
@@ -46,8 +46,16 @@ def main(logger):
         # Validate the framed object
         logger.debug(f"Validating the framed object")
         
-        target_class = "Root"
-        report = validate(framed, schema_path, target_class)
+        try:
+            target_class = "ROCrateMetadata"
+            report = lmval.validate(instance=framed,
+                                    schema=schema_path,
+                                    target_class=target_class,
+                                    strict=True
+                                    )
+        except Exception as e:
+            logger.error(f"Error: {e}")
+            return
 
         logger.debug(f"Validation report: {report}")
         
