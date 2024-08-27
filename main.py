@@ -57,7 +57,7 @@ def main(logger):
             logger.error(f"Error: {e}")
             return
 
-        logger.debug(f"Validation report: {report}")
+        logger.info(f"Validation report: {report}")
         
         # ---------------------------------------------------------------------
         # Perform assertions
