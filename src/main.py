@@ -45,6 +45,9 @@ def main(logger=None, input_path=None):
             # Construct schema path variable
             
             schema_path = os.path.join(schema_dir, directory, "schema.yaml")
+            if not os.path.isfile(schema_path):
+                logger.error(f"Schema file {schema_path} not found! Exiting")
+                return False
 
             # ------------------------------------------------------------------
             # Load the frame file
