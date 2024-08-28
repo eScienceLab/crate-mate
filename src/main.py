@@ -25,12 +25,13 @@ def main(logger=None, input_path=None):
             logger.debug(f"Loaded example file: {example_path}")
         except Exception as e:
             logger.error(f"Error: {e}")
-            return
+            return False
 
         logger.debug(f"Raw object: {json.dumps(crate_raw, indent=2)}")
 
         # ---------------------------------------------------------------------
         # Add a @base to the context
+        logger.debug("Performing absolution")
 
         crate = absolutise.absolutise(logger, crate_raw)
 
@@ -39,18 +40,27 @@ def main(logger=None, input_path=None):
 
         for directory in os.listdir(schema_dir):
             logger.debug(f"Processing directory: {directory}")
+
+            # ------------------------------------------------------------------
+            # Construct schema path variable
             
             schema_path = os.path.join(schema_dir, directory, "schema.yaml")
 
             # ------------------------------------------------------------------
             # Load the frame file
+            logger.debug(f"Loading grame file")
             
             frame_file = os.path.join(schema_dir, directory, "frame.json")
-            with open(frame_file, "r") as frame:
-                frame = json.load(frame)
+            try:
+                with open(frame_file, "r") as frame:
+                    frame = json.load(frame)
+            except Exception as e:
+                logger.error(f"Error: {e}")
+                return False
 
             # ------------------------------------------------------------------
             # Apply framing
+            logger.debug(f"Applying framing")
         
             framed = framing.apply_frame(logger, crate, frame)
 
@@ -67,7 +77,7 @@ def main(logger=None, input_path=None):
                                         )
             except Exception as e:
                 logger.error(f"Error: {e}")
-                return
+                return False
 
             logger.info(f"Validation report: {report}")
         
@@ -83,6 +93,9 @@ def main(logger=None, input_path=None):
                     logger.error(f"{result.message}")
                 raise e
 
+            # ---------------------------------------------------------------------
+            # Return success
+            
             return True
 
 if __name__ == "__main__":
