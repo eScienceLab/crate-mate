@@ -4,12 +4,13 @@ import linkml.validator as lmval
 import argparse
 import json
 import logging
+import os
 
 from src import absolutise
 from src import framing
 
 example_path = "/workspace/example.json"
-schema_path = "/workspace/schema.yaml"
+schema_dir = "/workspace/schema"
 
 def main(logger=None, input_path=None):
     # Load crate jsonld into json object
@@ -32,45 +33,57 @@ def main(logger=None, input_path=None):
         # Add a @base to the context
 
         crate = absolutise.absolutise(logger, crate_raw)
-        
-        # ----------------------------------------------------------------------
-        # Apply framing
-        
-        frame = {
-            "@id": f"ro-crate-metadata.json",
-        }
-
-        framed = framing.apply_frame(logger, crate, frame)
 
         # ---------------------------------------------------------------------
-        # Validate the framed object
-        logger.debug(f"Validating the framed object")
-        try:
-            target_class = "ROCrateMetadata"
-            report = lmval.validate(instance=framed,
-                                    schema=schema_path,
-                                    target_class=target_class,
-                                    strict=True
-                                    )
-        except Exception as e:
-            logger.error(f"Error: {e}")
-            return
+        # Iterate over the schema directory, loading each schema file and frame
 
-        logger.info(f"Validation report: {report}")
+        for directory in os.listdir(schema_dir):
+            logger.debug(f"Processing directory: {directory}")
+            
+            schema_path = os.path.join(schema_dir, directory, "schema.yaml")
+
+            # ------------------------------------------------------------------
+            # Load the frame file
+            
+            frame_file = os.path.join(schema_dir, directory, "frame.json")
+            with open(frame_file, "r") as frame:
+                frame = json.load(frame)
+
+            # ------------------------------------------------------------------
+            # Apply framing
         
-        # ---------------------------------------------------------------------
-        # Perform assertions
-        logger.debug(f"Performing assertions")
+            framed = framing.apply_frame(logger, crate, frame)
 
-        try:
-            assert report.results == []
-            logger.info(f"Validation passed")
-        except AssertionError as e:
-            for result in report.results:
-                logger.error(f"{result.message}")
-            raise e
+            # ------------------------------------------------------------------
+            # Validate the framed object
+            logger.debug(f"Validating the framed object")
+            
+            try:
+                target_class = "ROCrateMetadata"
+                report = lmval.validate(instance=framed,
+                                        schema=schema_path,
+                                        target_class=target_class,
+                                        strict=True
+                                        )
+            except Exception as e:
+                logger.error(f"Error: {e}")
+                return
 
-        return True
+            logger.info(f"Validation report: {report}")
+        
+            # ---------------------------------------------------------------------
+            # Perform assertions
+            logger.debug(f"Performing assertions")
+
+            try:
+                assert report.results == []
+                logger.info(f"Validation passed")
+            except AssertionError as e:
+                for result in report.results:
+                    logger.error(f"{result.message}")
+                raise e
+
+            return True
 
 if __name__ == "__main__":
 
