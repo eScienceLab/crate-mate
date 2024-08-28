@@ -13,5 +13,5 @@ RUN pip install -r requirements.txt
 COPY . .
 
 # Entrypoint
-ENTRYPOINT ["python", "main.py"]
+ENTRYPOINT ["python", "-m", "src.main"]
 
