@@ -11,7 +11,7 @@ from src import framing
 example_path = "/workspace/example.json"
 schema_path = "/workspace/schema.yaml"
 
-def main(logger):
+def main(logger=None, input_path=None):
     # Load crate jsonld into json object
     with open(example_path, "r") as example_file:
 
@@ -70,6 +70,8 @@ def main(logger):
                 logger.error(f"{result.message}")
             raise e
 
+        return True
+
 if __name__ == "__main__":
 
     # ---------------------------------------------------------------------
@@ -77,6 +79,7 @@ if __name__ == "__main__":
     
     arg_parser = argparse.ArgumentParser(description="RO-Crate Framing Example")
     arg_parser.add_argument("--log", help="Set logging level", default="INFO")
+    arg_parser.add_argument("--input", help="Path to input file", default="/workspace/example.json")
     args = arg_parser.parse_args()
 
     # ---------------------------------------------------------------------
@@ -86,5 +89,6 @@ if __name__ == "__main__":
     logger = logging.getLogger(__name__)
     logger.setLevel(args.log)
     
-    main(logger)
+    main(logger=logger,
+         input_path=args.input)
  
